@@ -1,8 +1,6 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
   production_traefik: {}
   production_django_media: {}
 
@@ -15,24 +13,13 @@ services:
     image: backend_production_django
     volumes:
       - production_django_media:/app/backend/media
+      - ./db.sqlite3:/app/db.sqlite3
     depends_on:
-      - postgres
       - redis
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
-
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: backend_production_postgres
-    volumes:
-      - production_postgres_data:/var/lib/postgresql/data
-      - production_postgres_data_backups:/backups
-    env_file:
-      - ./.envs/.production/.postgres
 
   traefik:
     build:
