@@ -12,3 +12,13 @@ AUTHENTICATION_ERROR = {
     "code": 101001,
     "message": _("Authentication error"),
 }
+
+# 102xxx - Registration errors
+USERNAME_ALREADY_TAKEN = {
+    "code": 102001,
+    "message": _("Username is already taken."),
+}
+INACCESSIBLE_REGISTRATION_STEP = {
+    "code": 102002,
+    "message": _("Registration step is not accessible to user."),
+}
