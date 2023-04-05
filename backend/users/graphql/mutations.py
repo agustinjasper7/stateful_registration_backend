@@ -97,6 +97,7 @@ class SaveRegistrationStep(graphene.Mutation):
 
     @staticmethod
     def get_save_registration_step_serializer(root, info, input=None, **kwargs):
+        input = input or {}
         return SaveRegistrationStepSerializer(
             data=input,
             context={"user": info.context.user},
