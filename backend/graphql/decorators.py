@@ -24,7 +24,10 @@ def check_permissions(permissions):
             for permission_class in permissions:
                 permission = permission_class()
                 try:
-                    permission.has_permission(context, data=kwargs.get("input", {}))
+                    permission.has_permission(
+                        context,
+                        data=kwargs.get("input", {}),
+                    )
                 except PermissionDenied:
                     return ResponseErrors(errors=[permission.error_response()])
             return func(*args, **kwargs)
