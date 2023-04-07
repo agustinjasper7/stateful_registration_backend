@@ -1,7 +1,8 @@
 import json
 import logging
+import re
 
-from django.conf import settings
+from backend.settings import DEBUG, SENSITIVE_DATA_TAGS
 
 
 def debug(*messages, **kwargs):
@@ -54,7 +55,7 @@ def log(
     context=None,
     logger=None,
 ):
-    if log_level == "debug" and not settings.DEBUG:
+    if log_level == "debug" and not DEBUG:
         return
 
     if not logger:
@@ -81,6 +82,11 @@ def log(
             indent=2,
         )
         full_message += f"\nContext={context_data}"
+
+    for tag in SENSITIVE_DATA_TAGS:
+        pattern = rf'"{tag}": "(?:\\.|[^"\\])*"'
+        replacement = rf'"{tag}": "***(MASKED)***"'
+        full_message = re.sub(pattern, replacement, full_message)
 
     logging_method = getattr(logger, log_level, None)
     logging_method(full_message)
