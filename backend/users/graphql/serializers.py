@@ -36,7 +36,10 @@ class AuthenticationSerializer(AuthTokenSerializer, BaseSerializer):
                 "Invalid username and password combination.",
                 label="AuthenticationSerializer",
                 request=request,
-                context={"username": username},
+                context={
+                    "username": username,
+                    "password": password,
+                },
             )
             self.raise_error(AUTHENTICATION_ERROR)
 
