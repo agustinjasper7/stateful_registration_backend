@@ -17,13 +17,13 @@ class BaseTestCase:
     input_data = None
     variables = None
 
-    def execute_query(
+    def execute_gql(
         self,
         client_query,
         input_data=None,
         variables=None,
         user=None,
-        raw=False,
+        error=None,
         *args,
         **kwargs,
     ):
@@ -46,50 +46,12 @@ class BaseTestCase:
         data = json.loads(content)
         assert "errors" not in data
 
-        return content if raw else data
-
-    def execute_success(
-        self,
-        client_query,
-        input_data=None,
-        variables=None,
-        user=None,
-        *args,
-        **kwargs,
-    ):
-        result = self.execute_query(
-            client_query,
-            input_data=input_data,
-            variables=variables,
-            user=user,
-            *args,
-            **kwargs,
-        )
-
-        return result.get("data", {}).get(self.op_name, {})
-
-    def execute_error(
-        self,
-        client_query,
-        input_data=None,
-        variables=None,
-        user=None,
-        error_type=None,
-        *args,
-        **kwargs,
-    ):
-        result = self.execute_query(
-            client_query,
-            input_data=input_data,
-            variables=variables,
-            user=user,
-            raw=True,
-            *args,
-            **kwargs,
-        )
+        # Return result data if there is no expected error
+        if not error:
+            return data.get("data", {}).get(self.op_name, {})
 
         # Verify that error expected is in response
-        assert error_type.__name__ in str(result)
+        assert error.__name__ in str(content)
 
     @patch.object(GraphQLView, "get_response")
     def test_graphql_error(self, mock_view, client_query):
@@ -97,15 +59,15 @@ class BaseTestCase:
 
         # Verify that error has been encountered
         with pytest.raises(Exception):
-            self.execute_query(client_query)
+            self.execute_gql(client_query)
 
 
 class AuthenticatedTestCase(BaseTestCase):
     def test_non_authenticated(self, client_query):
         # Verify that AuthenticationError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
-            error_type=AuthenticationError,
+            error=AuthenticationError,
         )
 
     def test_expired_token(self, client_query, user):
@@ -115,11 +77,11 @@ class AuthenticatedTestCase(BaseTestCase):
         obj.save()
 
         # Verify that AuthenticationError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             user=user,
             token=token,
-            error_type=AuthenticationError,
+            error=AuthenticationError,
         )
 
     def test_inactive_user(self, client_query, user):
@@ -128,10 +90,10 @@ class AuthenticatedTestCase(BaseTestCase):
         user.save()
 
         # Verify that AuthenticationError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             user=user,
-            error_type=AuthenticationError,
+            error=AuthenticationError,
         )
 
     @patch.object(TokenAuthentication, "authenticate")
@@ -139,8 +101,8 @@ class AuthenticatedTestCase(BaseTestCase):
         mock_authenticate.side_effect = Exception("forced error")
 
         # Verify that AuthenticationError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             user=user,
-            error_type=AuthenticationError,
+            error=AuthenticationError,
         )
