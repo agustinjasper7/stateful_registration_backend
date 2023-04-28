@@ -289,4 +289,4 @@ GRAPHENE = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-SENSITIVE_DATA_TAGS = []
+SENSITIVE_DATA_TAGS = ["password"]

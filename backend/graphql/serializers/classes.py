@@ -1,11 +1,20 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 
-from backend.errors import AUTHENTICATION_ERROR, INTERNAL_ERROR
+from backend.errors import (
+    AUTHENTICATION_ERROR,
+    INACCESSIBLE_REGISTRATION_STEP,
+    INTERNAL_ERROR,
+    USERNAME_ALREADY_TAKEN,
+)
 from backend.graphql.types.errors import (
     AuthenticationError,
     InternalError,
     InvalidInputError,
+)
+from backend.users.graphql.types.errors import (
+    InaccessibleRegistrationStep,
+    UsernameAlreadyTaken,
 )
 
 
@@ -13,6 +22,8 @@ class BaseSerializer(Serializer):
     error_map = [
         (INTERNAL_ERROR, InternalError),
         (AUTHENTICATION_ERROR, AuthenticationError),
+        (USERNAME_ALREADY_TAKEN, UsernameAlreadyTaken),
+        (INACCESSIBLE_REGISTRATION_STEP, InaccessibleRegistrationStep),
     ]
 
     def __init__(self, *args, **kwargs):

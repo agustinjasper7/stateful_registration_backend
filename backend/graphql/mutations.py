@@ -1,5 +1,7 @@
-import graphene
+from backend.users.graphql.mutations import Mutation as UserMutations
 
 
-class Mutation(graphene.ObjectType):
+class Mutation(
+    UserMutations,
+):
     pass

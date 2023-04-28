@@ -1,5 +1,7 @@
-import graphene
+from backend.users.graphql.queries import Query as UserQueries
 
 
-class Query(graphene.ObjectType):
+class Query(
+    UserQueries,
+):
     pass
