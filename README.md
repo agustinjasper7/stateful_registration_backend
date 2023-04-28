@@ -11,15 +11,18 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 ## Basic Commands
 
-### Setting Up Your Users
+### Creating Database File
 
--   To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+-   To create a **database file**, use this command:
+
+        $ touch db.sqlite3
+
+### Creating Super User for Admin access
 
 -   To create a **superuser account**, use this command:
 
         $ python manage.py createsuperuser
 
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
 ### Type checks
 
@@ -50,3 +53,25 @@ The following details how to deploy this application.
 ### Docker
 
 See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+
+#### Building the server image
+
+    $ docker-compose -f local.yml build
+
+#### Running the server
+
+    $ docker-compose -f local.yml up -d
+
+#### Terminating the server
+
+    $ docker-compose -f local.yml up down
+
+#### Connecting to Logs
+
+    $ docker-compose -f local.yml logs -f django
+
+#### Other Commands
+
+Used to commands in docker like management commands, tests, coverage, shell, etc.
+
+    $ docker-compose -f local.yml run --rm django <command>
