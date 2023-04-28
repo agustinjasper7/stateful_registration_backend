@@ -30,7 +30,7 @@ class TestUser(AuthenticatedTestCase):
     """
 
     def test_success(self, client_query, user):
-        content = self.execute_success(client_query, user=user)
+        content = self.execute_gql(client_query, user=user)
 
         # Verify user data
         assert content.get("name") == user.name

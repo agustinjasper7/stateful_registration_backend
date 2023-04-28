@@ -43,11 +43,11 @@ class TestSaveRegistrationStep(AuthenticatedTestCase):
         input_data["step"] = 0
 
         # Verify that InvalidInputError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             input_data=input_data,
             user=user,
-            error_type=InvalidInputError,
+            error=InvalidInputError,
         )
 
     def test_greater_max_step_input(self, client_query, user):
@@ -55,11 +55,11 @@ class TestSaveRegistrationStep(AuthenticatedTestCase):
         input_data["step"] = 5
 
         # Verify that InvalidInputError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             input_data=input_data,
             user=user,
-            error_type=InvalidInputError,
+            error=InvalidInputError,
         )
 
     def test_inaccessible_registration_step(self, client_query, user):
@@ -67,11 +67,11 @@ class TestSaveRegistrationStep(AuthenticatedTestCase):
         input_data["step"] = 2
 
         # Verify that InvalidInputError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             input_data=input_data,
             user=user,
-            error_type=InaccessibleRegistrationStep,
+            error=InaccessibleRegistrationStep,
         )
 
     @patch.object(User, "update_registration_step")
@@ -79,14 +79,14 @@ class TestSaveRegistrationStep(AuthenticatedTestCase):
         mock_update.side_effect = Exception("forced_error")
 
         # Verify that InternalError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             user=user,
-            error_type=InternalError,
+            error=InternalError,
         )
 
     def test_success(self, client_query, user):
-        self.execute_success(
+        self.execute_gql(
             client_query,
             user=user,
         )

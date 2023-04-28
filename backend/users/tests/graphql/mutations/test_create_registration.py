@@ -39,13 +39,13 @@ class TestCreateRegistration(BaseTestCase):
 
     def test_username_already_taken(self, client_query, user):
         # Verify that UsernameAlreadyTaken is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
             input_data={
                 "username": user.username,
                 "password": "password",
             },
-            error_type=UsernameAlreadyTaken,
+            error=UsernameAlreadyTaken,
         )
 
     @patch.object(User.objects, "create_user")
@@ -53,13 +53,13 @@ class TestCreateRegistration(BaseTestCase):
         mock_create.side_effect = Exception("forced_error")
 
         # Verify that InternalError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
-            error_type=InternalError,
+            error=InternalError,
         )
 
     def test_success(self, client_query):
-        self.execute_success(client_query)
+        self.execute_gql(client_query)
 
         # Verify that new user is created with input username
         username = self.input_data["username"]

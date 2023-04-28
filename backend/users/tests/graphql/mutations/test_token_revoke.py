@@ -32,17 +32,17 @@ class TestTokenRevoke(AuthenticatedTestCase):
     def test_knox_error(self, mock_create, client_query, user):
         mock_create.side_effect = Exception("forced_error")
 
-        self.execute_error(
+        self.execute_gql(
             client_query,
             user=user,
-            error_type=InternalError,
+            error=InternalError,
         )
 
         # Verify that token is not yet deleted.
         assert AuthToken.objects.last()
 
     def test_success(self, client_query, user):
-        self.execute_success(
+        self.execute_gql(
             client_query,
             user=user,
         )

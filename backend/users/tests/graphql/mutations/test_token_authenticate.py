@@ -48,7 +48,7 @@ class TestTokenAuthenticate(BaseTestCase):
 
     def test_non_existent_user(self, client_query):
         # Verify that AuthenticationError is in the response data
-        self.execute_error(client_query, error_type=AuthenticationError)
+        self.execute_gql(client_query, error=AuthenticationError)
 
         # Verify that token is not yet created.
         assert not AuthToken.objects.last()
@@ -60,9 +60,9 @@ class TestTokenAuthenticate(BaseTestCase):
         UserFactory(username=data["username"], password=data["password"])
 
         # Verify that InternalError is in the response data
-        self.execute_error(
+        self.execute_gql(
             client_query,
-            error_type=InternalError,
+            error=InternalError,
         )
 
         # Verify that token is not yet created.
@@ -74,7 +74,7 @@ class TestTokenAuthenticate(BaseTestCase):
             password=self.input_data.get("password"),
         )
 
-        content = self.execute_success(client_query)
+        content = self.execute_gql(client_query)
 
         # Verify user data
         user_data = content.get("user", {})
