@@ -172,6 +172,7 @@ typings/
 
 # User-specific stuff:
 .idea
+.idea/**
 .idea/
 .idea/**/workspace.xml
 .idea/**/tasks.xml
